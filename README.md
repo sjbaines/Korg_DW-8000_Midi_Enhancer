@@ -12,3 +12,5 @@ MIDI THRU is unaffected by the changes, as the Nano is be spliced in just before
 
 Certain CC messages are replaced with SYSEX parameter control messages, but all other MIDI messages are passed unchanged. This means that the SYSEX messages can still be used.
 
+For full project details and step by step instructions:
+https://hackaday.io/project/12541-korg-dw-8000-midi-enhancer
