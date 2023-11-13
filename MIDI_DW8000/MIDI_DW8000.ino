@@ -1,5 +1,5 @@
-// Korg DW-8000 MIDI Enhancer
-// By Steve Baines 2016
+// Korg DSS-1 MIDI Enhancer
+// By Steve Baines 2016, moded by Vladistone 2023
 // See:
 // https://hackaday.io/
 
@@ -31,7 +31,7 @@ void sendDw8000Param(byte channel, byte paramOffset, byte paramValue7Bit)
     0xf0,   // 0 Sysex start
     0x42,   // 1 Manufacturer ID: 42, Korg
     0x30,   // 2 Channel 1
-    0x03,   // 3 Device ID: 03, DW-8000
+    0x0b,   // 3 Device ID: 03, DW-8000 or: 0b, DSS-1
     0x41,   // 4 Message: 41, Parameter change
     0x00,   // 5 Parameter Offset number (which parameter we want to change)
     0x00,   // 6 Parameter value
