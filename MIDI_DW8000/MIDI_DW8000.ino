@@ -42,16 +42,16 @@ void sendDSS1Param_8(byte channel, byte paramOffset, byte paramValue7Bit)
 
 
 #if(0)
-	case 00: // Osc 1 Level (101)
-	case 01: // Osc 2 Level (101)
-	case 02: // A.Bend Intesity (128)
-	case 03: // Noise Level (64)
-	case 04: // VCF Mode/Slope (2)
-	case 05: // VCF EG Polarity (2)
-	case 06: // VCF Cutoff (128)
-	case 07: // VCF EG Intensity (64)
-	case 08: // VCF Resonance (64)
-	case 09: // VCF Kbd Track (64)
+	case 0:  // Osc 1 Level (101)
+	case 1:  // Osc 2 Level (101)
+	case 2:  // A.Bend Intesity (128)
+	case 3:  // Noise Level (64)
+	case 4:  // VCF Mode/Slope (2)
+	case 5:  // VCF EG Polarity (2)
+	case 6:  // VCF Cutoff (128)
+	case 7:  // VCF EG Intensity (64)
+	case 8:  // VCF Resonance (64)
+	case 9:  // VCF Kbd Track (64)
 	case 10: // VCF MG Frequency (64)
 	case 11: // VCF MG Delay (64)
 	case 12: // VCF MG Intensity (64)
@@ -132,8 +132,8 @@ void sendDSS1Param_8(byte channel, byte paramOffset, byte paramValue7Bit)
   byte paramValueScaled = 0;
   switch (paramOffset)
   {
-	case 04: // VCF Mode/Slope (2)
-	case 05: // VCF EG Polarity (2)
+	case 4:  // VCF Mode/Slope (2)
+	case 5:  // VCF EG Polarity (2)
 	case 38: // ATch VCF Mode (2)
 	case 41: // JStck VCF Mode (2)
 	case 51: // DDL-2 Input Select (2)
@@ -173,10 +173,10 @@ void sendDSS1Param_8(byte channel, byte paramOffset, byte paramValue7Bit)
 	  paramValueScaled = paramValue7Bit >> 2;
 	  break;
 
-	case 03: // Noise Level (64)
-	case 07: // VCF EG Intensity (64)
-	case 08: // VCF Resonance (64)
-	case 09: // VCF Kbd Track (64)
+	case 3:  // Noise Level (64)
+	case 7:  // VCF EG Intensity (64)
+	case 8:  // VCF Resonance (64)
+	case 9:  // VCF Kbd Track (64)
 	case 10: // VCF MG Frequency (64)
 	case 11: // VCF MG Delay (64)
 	case 12: // VCF MG Intensity (64)
@@ -212,10 +212,8 @@ void sendDSS1Param_8(byte channel, byte paramOffset, byte paramValue7Bit)
 	  paramValueScaled = paramValue7Bit >> 1;
 	  break;
 
-	case 00: // Osc 1 Level (101) range as is
-	case 01: // Osc 2 Level (101) range as is
-	case 02: // A.Bend Intesity (128)
-	case 06: // VCF Cutoff (128)
+	case 2:  // A.Bend Intesity (128)
+	case 6:  // VCF Cutoff (128)
 	case 19: // VCA Kbd Decay (128)
 	  paramValueScaled = paramValue7Bit;
 	  break;
@@ -223,24 +221,29 @@ void sendDSS1Param_8(byte channel, byte paramOffset, byte paramValue7Bit)
 	case 63: // Osc 1 Octave (3)  // for this parameter and below we are use operation `/` divide
 	case 64: // Osc 2 Octave (3)
 	case 76: // Key Assign mode (3)
-	  paramValueScaled = paramValue7Bit / 42;
+	  paramValueScaled = paramValue7Bit/43;
 	  break;
 
 	case 62: // Bit D A Resolution (5)
-	  paramValueScaled = paramValue7Bit / 25;
+	  paramValueScaled = paramValue7Bit/26;
 	  break;
 
 	case 66: // Osc 2 Interval (12)
-	  paramValueScaled = paramValue7Bit 255 / 256;
+	  paramValueScaled = paramValue7Bit*24/256;
 	  break;
 
 	case 40: // JStck PBend Range (13)
 	case 42: // EQ Bass (13)
 	case 43: // EQ Treble (13)
-	  paramValueScaled = paramValue7Bit 255 / 256;
+	  paramValueScaled = paramValue7Bit*26/256;
 	  break;
 
-	// case : // Max OSC Band Range (13)	// the SysEx unclear, indefinite!
+	case 0:  // Osc 1 Level (101)
+	case 1:  // Osc 2 Level (101)
+	  paramValueScaled = paramValue7Bit*203/256;
+	  break;
+
+	// case : // Max OSC Band Range (13) the SysEx unclear, indefinite!
 	// case 46/47: // DDL-1 Time (a) (128)
 	// case 46/47: // DDL-1 Time (b) (128)
 	// case 46/47: // DDL-1 Time (c) (128)
@@ -290,27 +293,27 @@ void handleControlChange(byte channel, byte number, byte value)
   switch(number)
   {
 	// Mappings to common CCs: (See http://nickfever.com/music/midi-cc-list)
-	//	CC#						Param. Offset
-	//	 ||							  ||
-	//		SSL Nucleus Fader group L
-	case 00: sendDSS1Param_8(channel, 00, value); break; // OSC1 Level
-	case 01: sendDSS1Param_8(channel, 01, value); break; // OSC2 Level
-	case 02: sendDSS1Param_8(channel, 03, value); break; // Noise Level
-	case 03: sendDSS1Param_8(channel, 65, value); break; // OSC1 Octave
-	case 04: sendDSS1Param_8(channel, 66, value); break; // OSC2 Octave
-	case 05: sendDSS1Param_8(channel, 02, value); break; // A.Bend Intesity/ Portameto Mix
-	case 06: sendDSS1Param_8(channel, 79, value); break; // Unison Voices
-	case 07: sendDSS1Param_8(channel, 20, value); break; // VCA Level
-	//		SSL Nucleus Fader group R
-	case 08: sendDSS1Param_8(channel, 42, value); break; // EQ Bass
-	case 09: sendDSS1Param_8(channel, 43, value); break; // EQ Treble
+	//   CC#		Param. Offset
+	//   ||				 ||
+	//	SSL Nucleus Fader group L
+	case 0: sendDSS1Param_8(channel, 0, value); break;  // OSC1 Level
+	case 1: sendDSS1Param_8(channel, 1, value); break;  // OSC2 Level
+	case 2: sendDSS1Param_8(channel, 3, value); break;  // Noise Level
+	case 3: sendDSS1Param_8(channel, 65, value); break; // OSC1 Octave
+	case 4: sendDSS1Param_8(channel, 66, value); break; // OSC2 Octave
+	case 5: sendDSS1Param_8(channel, 2, value); break;  // A.Bend Intesity/ Portameto Mix
+	case 6: sendDSS1Param_8(channel, 79, value); break; // Unison Voices
+	case 7: sendDSS1Param_8(channel, 20, value); break; // VCA Level
+	//	SSL Nucleus Fader group R
+	case 8: sendDSS1Param_8(channel, 42, value); break;  // EQ Bass
+	case 9: sendDSS1Param_8(channel, 43, value); break;  // EQ Treble
 	case 10: sendDSS1Param_8(channel, 21, value); break; // VCA EG Attack
 	case 11: sendDSS1Param_8(channel, 22, value); break; // VCA EG Decay
 	case 12: sendDSS1Param_8(channel, 23, value); break; // VCA EG Breakpoint
 	case 13: sendDSS1Param_8(channel, 24, value); break; // VCA EG Slope
 	case 14: sendDSS1Param_8(channel, 25, value); break; // VCA EG Sustain
 	case 15: sendDSS1Param_8(channel, 26, value); break; // VCA EG Release
-	//		SSL Nucleus V-Coder group L
+	//	SSL Nucleus V-Coder group L
 	case 16: sendDSS1Param_8(channel, 60, value); break; // OSC1 Multisound
 	case 17: sendDSS1Param_8(channel, 61, value); break; // OSC2 Multisound
 	case 18: sendDSS1Param_8(channel, 64, value); break; // Bit D A Resolution
@@ -319,25 +322,25 @@ void handleControlChange(byte channel, byte number, byte value)
 	case 21: sendDSS1Param_8(channel, 75, value); break; // A.Bend Time/ Portamento time
 	case 22: sendDSS1Param_8(channel, 76, value); break; // Unison Detune
 	case 23: sendDSS1Param_8(channel, 77, value); break; // Velocity OSC X-Switch
-	//		SSL Nucleus V-Coder group R
-	case 24: sendDSS1Param_8(channel, 06, value); break; // VCF Cutoff
-	case 25: sendDSS1Param_8(channel, 08, value); break; // VCF Resonance
+	//	SSL Nucleus V-Coder group R
+	case 24: sendDSS1Param_8(channel, 6, value); break;  // VCF Cutoff
+	case 25: sendDSS1Param_8(channel, 8, value); break;  // VCF Resonance
 	case 26: sendDSS1Param_8(channel, 13, value); break; // VCF EG Attack
 	case 27: sendDSS1Param_8(channel, 14, value); break; // VCF EG Decay
 	case 28: sendDSS1Param_8(channel, 15, value); break; // VCF EG Breakpoint
 	case 29: sendDSS1Param_8(channel, 16, value); break; // VCF EG Slope
 	case 30: sendDSS1Param_8(channel, 17, value); break; // VCF EG Sustain
 	case 31: sendDSS1Param_8(channel, 18, value); break; // VCF EG Release
-	//		SSL Nucleus Select SW group L
+	//	SSL Nucleus Select SW group L
 	case 64: sendDSS1Param_8(channel, 38, value); break; // ATch VCF Mode
 	case 65: sendDSS1Param_8(channel, 41, value); break; // JStck VCF Mode
 	case 66: sendDSS1Param_8(channel, 63, value); break; // Sync Mode
 	case 67: sendDSS1Param_8(channel, 52, value); break; // DDL-2 Input Select Dir/parallel/DLL-1
 	case 68: sendDSS1Param_8(channel, 59, value); break; // DDL-2 Mod Invert
 	case 69: sendDSS1Param_8(channel, 74, value); break; // A.Bend Polarity Mode Down/Up
-	case 70: sendDSS1Param_8(channel, 04, value); break; // VCF Mode/Slope: on/off
-	case 71: sendDSS1Param_8(channel, 05, value); break; // VCF EG Polarity: on/off
-	//		SSL Nucleus Select SW group R
+	case 70: sendDSS1Param_8(channel, 4, value); break;  // VCF Mode/Slope: on/off
+	case 71: sendDSS1Param_8(channel, 5, value); break;  // VCF EG Polarity: on/off
+	//	SSL Nucleus Select SW group R
 	//case 72: sendDSS1Param_8(channel, , value); break; //
 	//case 73: sendDSS1Param_8(channel, , value); break; //
 	//case 74: sendDSS1Param_8(channel, , value); break; //
@@ -346,7 +349,7 @@ void handleControlChange(byte channel, byte number, byte value)
 	//case 77: sendDSS1Param_8(channel, , value); break; //
 	//case 78: sendDSS1Param_8(channel, , value); break; //
 	//case 79: sendDSS1Param_8(channel, , value); break; //
-	//		SSL Nucleus V-Coder Select group L
+	//	SSL Nucleus V-Coder Select group L
 	//case 80: sendDSS1Param_8(channel, , value); break; //
 	//case 81: sendDSS1Param_8(channel, , value); break; //
 	//case 82: sendDSS1Param_8(channel, , value); break; //
@@ -355,7 +358,7 @@ void handleControlChange(byte channel, byte number, byte value)
 	//case 85: sendDSS1Param_8(channel, , value); break; //
 	//case 86: sendDSS1Param_8(channel, , value); break; //
 	//case 87: sendDSS1Param_8(channel, , value); break; //
-	//		SSL Nucleus V-Coder Select group R
+	//	SSL Nucleus V-Coder Select group R
 	//case 88: sendDSS1Param_8(channel, , value); break; //
 	//case 89: sendDSS1Param_8(channel, , value); break; //
 	//case 90: sendDSS1Param_8(channel, , value); break; //
@@ -367,16 +370,16 @@ void handleControlChange(byte channel, byte number, byte value)
 
 #if(0)
 	CC   Offset #  Param name
-	00    case 00: // Osc 1 Level
-	01    case 01: // Osc 2 Level
-	02    case 03: // Noise Level
-	03    case 65: // Osc 1 Octave
-	04    case 66: // Osc 2 Octave
-	05    case 02: // A.Bend Intesity/ Portameto mix
-	06    case 79: // Unison Voices
-	07    case 20: // VCA Level
-	08    case 42: // EQ Bass
-	09    case 43: // EQ Treble
+	0    case 0:   // Osc 1 Level
+	1    case 1:   // Osc 2 Level
+	2    case 3:   // Noise Level
+	3    case 65:  // Osc 1 Octave
+	4    case 66:  // Osc 2 Octave
+	5    case 2:   // A.Bend Intesity/ Portameto mix
+	6    case 79:  // Unison Voices
+	7    case 20:  // VCA Level
+	8    case 42:  // EQ Bass
+	9    case 43:  // EQ Treble
 	10    case 21: // VCA EG Attack
 	11    case 22: // VCA EG Decay
 	12    case 23: // VCA EG Breakpoint
@@ -391,8 +394,8 @@ void handleControlChange(byte channel, byte number, byte value)
 	21    case 75: // A.Bend Time/ Portamento time
 	22    case 76: // Unison Detune
 	23    case 77: // Veloc Osc X-Switch
-	24    case 06: // VCF Cutoff
-	25    case 08: // VCF Resonance
+	24    case 6:  // VCF Cutoff
+	25    case 8:  // VCF Resonance
 	26    case 13: // VCF EG Attack
 	27    case 14: // VCF EG Decay
 	28    case 15: // VCF EG Breakpoint
@@ -405,8 +408,8 @@ void handleControlChange(byte channel, byte number, byte value)
 	68    case 41: // JStck VCF Mode
 	68    case 63: // Sync Mode
 	69    case 74: // A.Bend Polarity Mode
-	70    case 04: // VCF Mode/Slope
-	71    case 05: // VCF EG Polarity
+	70    case 4:  // VCF Mode/Slope
+	71    case 5:  // VCF EG Polarity
 #endif
 
 	default:
