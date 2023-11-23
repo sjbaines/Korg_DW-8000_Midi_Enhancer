@@ -42,7 +42,7 @@ void sendDw8000Param(byte channel, byte paramOffset, byte paramValue7Bit)
   paramValue7Bit &= 0x7f;
 
 
-#if(0)
+#if 0
     case 0: // OSC 1 Octave (2b)
     case 1: // OSC 1 Waveform (4b)
     case 2: // OSC 1 Level (5b)
@@ -201,7 +201,7 @@ void handleNoteOff(byte channel, byte pitch, byte velocity)
 
 void handleControlChange(byte channel, byte number, byte value)
 {
-  if (--channel != dwChannel) //INT dssChannel's value (zero as 1CH) is always differ and less than the BYTE channel value by 1
+  if (--channel != dwChannel) //INT dwChannel's value (zero as 1CH) is always differ and less than the BYTE channel value by 1
   { // If CC not sent to DW-8000 channel, then just pass them on
     MIDI.sendControlChange(number, value, ++channel); // return correction above
     return;
@@ -271,7 +271,7 @@ void handleControlChange(byte channel, byte number, byte value)
     case 119: sendDw8000Param(channel, 50, value); break; // Aftertouch VCA (2b)
 
 
-#if(0)
+#if 0
 CC       Param Offset
 102    case 0: // OSC 1 Octave (2b)
 70    case 1: // OSC 1 Waveform (4b)
@@ -390,12 +390,3 @@ void loop()
     // The attached method will be called automatically
     // when the corresponding message has been received.
 }
-
-
-
-
-
-
-
-
-
