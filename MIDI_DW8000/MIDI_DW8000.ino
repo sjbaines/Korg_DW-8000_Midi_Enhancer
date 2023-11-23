@@ -201,9 +201,9 @@ void handleNoteOff(byte channel, byte pitch, byte velocity)
 
 void handleControlChange(byte channel, byte number, byte value)
 {
-  if (channel != dwChannel)
+  if (--channel != dwChannel) //INT dssChannel's value (zero as 1CH) is always differ and less than the BYTE channel value by 1
   { // If CC not sent to DW-8000 channel, then just pass them on
-    MIDI.sendControlChange(number, value, channel);
+    MIDI.sendControlChange(number, value, ++channel); // return correction above
     return;
   }
 
@@ -350,7 +350,7 @@ void handlePitchBend(byte channel, int bend)
 
 void handleSystemExclusive(byte* arrayData, unsigned arrayLen)
 {
-  MIDI.sendSysEx(arrayLen, arrayData, false);
+  MIDI.sendSysEx(arrayLen, arrayData, true); //true - must to insert 'F0' and 'F7' Sysex status byte
 }
 
 // -----------------------------------------------------------------------------
